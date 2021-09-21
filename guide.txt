@@ -1,0 +1,13 @@
+build: g++ dataTypes.cpp inputBuffer.cpp main.cpp -o main.o
+
+Valid commands:
+insert <table_name> <value> <value> ...
+create <table_name> <column> <column> ...
+
+
+Functionality:
+When creating a table, the first line in the file will be the name of the table, 
+followed by each column name. This will be the metadata for the table.
+Accepted types for columns are int (Integer), float (Float), and String (std::string).
+
+
