@@ -1,4 +1,13 @@
 24.09
+1.
 add a load_tables_in_memory() functionality
 that when you run main.o, it loads all of the tables in the memory, 
 in an organized way, so the reading is fast 
+
+2.
+add a LRUCache for each table 
+
+3.
+add a limitation for each table (10k entries max)
+in the metadata for each table, add a line that indicates the number of entries,
+which increments each time you add something, and decrements each time you delete something
