@@ -1,0 +1,4 @@
+24.09
+add a load_tables_in_memory() functionality
+that when you run main.o, it loads all of the tables in the memory, 
+in an organized way, so the reading is fast 
