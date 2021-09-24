@@ -121,7 +121,7 @@ int InputBuffer::createTable(std::vector<std::string> _tokenized) {
     std::string tableName = _tokenized[1];
     std::string tableNameFinal = "./tables/" + tableName + ".tab";
     std::ofstream outfile(tableNameFinal);
-    outfile << tableNameFinal << " ";
+    outfile << tableName << " ";
 
     std::vector<char> tableHeaderMask;
 
@@ -140,11 +140,15 @@ int InputBuffer::createTable(std::vector<std::string> _tokenized) {
             tableHeaderMask.push_back(STRING_TYPE);
         }
     }
+
     outfile << tableHeaderMask;
     outfile << " ";
     outfile << columns.size();;
     outfile << "\n";
     outfile << columnNames;
+    outfile << "\n";
+    outfile << "0";
+
     std::cout<<"Table "<<tableName<<" successfully created\n";
     return true;
 }

@@ -12,6 +12,7 @@ If the './tables' directory isn't present, than we will create it
 
 When creating a table, the first line in the file will be the name of the table, 
 followed by each column name. This will be the metadata for the table.
+The third line is the size (number of entries) in the table.
 Accepted types for columns are int (Integer), float (Float), and String (std::string).
 
 
