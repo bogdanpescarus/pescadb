@@ -1,5 +1,5 @@
-#include "dataTypes.hpp"
-#include "inputBuffer.hpp"
+#include "./include/dataTypes.hpp"
+#include "./include/inputBuffer.hpp"
 
 int main() {
 
