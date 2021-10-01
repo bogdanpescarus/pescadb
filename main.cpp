@@ -4,6 +4,9 @@
 int main() {
 
     std::string input_string;
+
+    // load tables
+
     while(true) {
         print_prompt();
 

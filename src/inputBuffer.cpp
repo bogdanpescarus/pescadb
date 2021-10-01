@@ -4,6 +4,8 @@
 #include <memory>
 #include <sys/stat.h>
 
+int debug_flag = 0;
+
 // overload the << operator to output a vector 
 // into a file
 std::ofstream& operator<<(std::ofstream& out, const std::vector<char>& vec) {
@@ -147,15 +149,20 @@ int InputBuffer::createTable(std::vector<std::string> _tokenized) {
     outfile << "\n";
     outfile << columnNames;
     outfile << "\n";
-    outfile << "0";
+    outfile << "0\n";
 
     std::cout<<"Table "<<tableName<<" successfully created\n";
     return true;
 }
 
+// function used to insert a new row into 
+// an existing table
 int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
     std::string firstLine;
-    std::ifstream tableFile(_tokenizedInput[1]);
+    
+    std::string tableFullName = "tables/" +_tokenizedInput[1] + ".tab";
+//    std::ifstream tableFile(_tokenizedInput[1]);
+    std::ifstream tableFile(tableFullName);
 
     if(!tableFile.is_open()) {
         std::cout<<"Unable to open file "<<_tokenizedInput[1]<<std::endl;
@@ -166,7 +173,9 @@ int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
        fits the columns of the table */
     unsigned int inputNumber = 0;
     for(auto it = _tokenizedInput.begin(); it != _tokenizedInput.end(); it++) {
-        std::cout<<"___   "<<*it<<std::endl;
+		if(debug_flag) {
+        	std::cout<<"___   "<<*it<<std::endl;
+		}
         ++inputNumber;
     }
     
@@ -181,8 +190,6 @@ int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
     if((inputNumber-2) != (tableData[tableData.size()-2].size())) {
         std::cout<<"Wrong number of elements inserted in table "<<tableData[0]<<std::endl;
     }
-
-//    std::cout<<"BGD   "<<tableData[tableData.size()-2]<<std::endl;
     
     std::cout<<"tableData: ";
     for(int i = 0; i < tableData.size(); ++i) {
@@ -198,12 +205,27 @@ int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
     unsigned int validColumnsNum = tableData[tableData.size()-2].size();
     std::string columnTypes = tableData[tableData.size()-2];    
 
+	// now we will open the file in app mode,
+	// in order for us to write at the end of file (append)
+	// (there's no particular need to close the previously opened
+	// file, as this will be handled by the destructor)
+	std::ofstream tableWriteFile;
+	tableWriteFile.open(tableFullName, std::ios::app);
+
+	/*
+    if(!tableWriteFile.is_open()) {
+        std::cout<<"Unable to open file "<<_tokenizedInput[1]<<" for writing\n";
+        return false;
+    }
+	*/
+
     for(int i = 0; i < validColumnsNum; ++i) {
         if(columnTypes[i] == '1') {
             int value = 0;
             try {
                 value = std::stoi(_tokenizedInput[i+2]);
                 std::cout<<"Received "<<value<<std::endl;
+				tableWriteFile<<value<<" ";
             } catch (std::invalid_argument iaex) {
                 std::cout<<"Invalid argument ("<<i<<") passed - "<<iaex.what()<<std::endl;
                 return false;
@@ -214,6 +236,7 @@ int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
             try {
                 value = std::stof(_tokenizedInput[i+2]);
                 std::cout<<"Received "<<value<<std::endl;
+				tableWriteFile<<value<<" ";
             } catch (std::invalid_argument iaex) {
                 std::cout<<"Invalid argument ("<<i<<") passed - "<<iaex.what()<<std::endl;
                 return false;
@@ -222,17 +245,15 @@ int InputBuffer::updateTable(std::vector<std::string> _tokenizedInput) {
         if(columnTypes[i] == '4') {
             if(std::string* value = dynamic_cast<std::string*>(&_tokenizedInput[i+2])) {
                 std::cout<<"Successfully casted value to String "<<*value<<std::endl; 
+				tableWriteFile<<*value<<" ";
             } else {
                 std::cout<<"Value number "<<i<<" is of incorrect type (should be String)\n";
                 return false;
             }
         }
     }
-
-
+	tableWriteFile<<"\n";
 
     return true;
 }
-
-
 
